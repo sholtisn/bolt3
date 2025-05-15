@@ -14,8 +14,7 @@ import {
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
-import appStyles from '~/styles/app.css?url';
-import tailwindStyles from '~/styles/tailwind.css?url';
+import {themeClass, errorContainer, errorContent, errorTitle, errorStatus, errorMessage} from '~/styles/app.css';
 import {PageLayout} from './components/PageLayout';
 
 export type RootLoader = typeof loader;
@@ -25,12 +24,8 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
   nextUrl,
 }) => {
-  // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') return true;
-
-  // revalidate when manually revalidating via useRevalidator
   if (currentUrl.toString() === nextUrl.toString()) return true;
-
   return false;
 };
 
@@ -45,9 +40,7 @@ export function links() {
       href: 'https://shop.app',
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
-    {rel: 'stylesheet', href: tailwindStyles},
     {rel: 'stylesheet', href: resetStyles},
-    {rel: 'stylesheet', href: appStyles},
   ];
 }
 
@@ -117,14 +110,14 @@ export function Layout({children}: {children?: React.ReactNode}) {
   const data = useRouteLoaderData<RootLoader>('root');
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={themeClass}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="flex min-h-full flex-col bg-gray-50">
+      <body>
         {data ? (
           <Analytics.Provider
             cart={data.cart}
@@ -160,13 +153,13 @@ export function ErrorBoundary() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="rounded-lg bg-white p-8 shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold text-red-600">Oops!</h1>
-        <h2 className="mb-4 text-xl">{errorStatus}</h2>
+    <div className={errorContainer}>
+      <div className={errorContent}>
+        <h1 className={errorTitle}>Oops!</h1>
+        <h2 className={errorStatus}>{errorStatus}</h2>
         {errorMessage && (
-          <fieldset className="border border-gray-300 p-4">
-            <pre className="whitespace-pre-wrap text-sm text-gray-600">{errorMessage}</pre>
+          <fieldset>
+            <pre className={errorMessage}>{errorMessage}</pre>
           </fieldset>
         )}
       </div>
