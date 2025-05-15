@@ -46,6 +46,6 @@
   }
 
   .footer-menu a {
-    @apply text-white min-w-fit;
+    @apply min-w-fit text-white;
   }
 }
